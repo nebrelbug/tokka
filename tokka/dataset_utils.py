@@ -117,7 +117,25 @@ def load_and_interleave_datasets(
                 )
                 return {"text": text}
 
-            dataset = dataset.map(standardize_columns)
+            # For streaming datasets, we need to explicitly remove problematic columns
+            # Define known problematic columns from different dataset types
+            columns_to_remove = []
+            if "starcoder" in dataset_cfg["path"]:
+                # StarCoder datasets have these problematic columns
+                columns_to_remove = [
+                    "max_stars_count",
+                    "max_stars_repo_path",
+                    "max_stars_repo_name",
+                    "id",
+                    "content",
+                    "code",
+                ]
+            elif "fineweb" in dataset_cfg["path"]:
+                # FineWeb datasets may have other columns
+                columns_to_remove = ["url", "timestamp", "text"]
+
+            # Apply the mapping and remove problematic columns
+            dataset = dataset.map(standardize_columns, remove_columns=columns_to_remove)
 
             # Append both the dataset and its config
             successful_loads.append({"dataset": dataset, "config": dataset_cfg})
@@ -157,6 +175,19 @@ def load_and_interleave_datasets(
                 p / total_prob for p in interleave_probabilities
             ]
 
+        print(f"🔄 Interleaving {len(datasets_to_interleave)} datasets...")
+        print(
+            f"   Probabilities: {[f'{p:.3f}' for p in interleave_probabilities[:5]]}{'...' if len(interleave_probabilities) > 5 else ''}"
+        )
+
+        # Test if datasets can yield samples before interleaving
+        print("🧪 Testing first dataset for samples...")
+        try:
+            first_sample = next(iter(datasets_to_interleave[0].take(1)))
+            print(f"✅ First dataset working: {first_sample.keys()}")
+        except Exception as e:
+            print(f"❌ First dataset failed: {e}")
+
         interleaved_dataset = interleave_datasets(
             datasets_to_interleave, probabilities=interleave_probabilities, seed=42
         )
@@ -164,21 +195,35 @@ def load_and_interleave_datasets(
         interleaved_dataset = successful_loads[0]["dataset"]
         interleave_probabilities = [1.0]
 
-    print(f"Interleaved dataset ready with probabilities: {interleave_probabilities}")
+    print(
+        f"✅ Interleaved dataset ready with probabilities: {interleave_probabilities[:3]}{'...' if len(interleave_probabilities) > 3 else ''}"
+    )
     return interleaved_dataset, interleave_probabilities
 
 
 def create_text_iterator(interleaved_dataset) -> Iterator[str]:
     """Create an iterator that yields text from the interleaved dataset."""
     count = 0
-    for sample in interleaved_dataset:
-        # Now we standardized everything to 'text' column
-        text = sample.get("text", "")
-        if text and len(text.strip()) > 10:  # Filter very short texts
-            count += 1
-            if count % 5000 == 0:
-                print(f"  Processed {count:,} samples...")
-            yield text
+    print("🔍 Starting text iterator...")
+
+    try:
+        for sample in interleaved_dataset:
+            # Now we standardized everything to 'text' column
+            text = sample.get("text", "")
+            if text and len(text.strip()) > 10:  # Filter very short texts
+                count += 1
+                if count == 1:
+                    print(f"✅ First sample received! Text length: {len(text)}")
+                if count % 1000 == 0:  # More frequent updates for debugging
+                    print(f"  Processed {count:,} samples...")
+                yield text
+            elif count < 10:  # Debug first few samples
+                print(
+                    f"⚠️  Skipping sample {count}: text_len={len(text.strip()) if text else 0}"
+                )
+    except Exception as e:
+        print(f"❌ Error in text iterator: {e}")
+        raise
 
 
 def print_dataset_distribution(datasets_config: List[Dict[str, Any]]) -> None:

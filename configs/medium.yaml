@@ -85,9 +85,6 @@ datasets:
       - name: "ruby"
         priority: 3
         text_column: "content"
-      - name: "swift"
-        priority: 3
-        text_column: "content"
       - name: "kotlin"
         priority: 3
         text_column: "content"
