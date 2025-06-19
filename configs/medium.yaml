@@ -1,53 +1,107 @@
-# Simple 50M configuration for multilingual tokenizer training
-# Medium-scale setup with most common human languages and essential coding languages
+# Medium 50M configuration for multilingual tokenizer training
+# Comprehensive setup with common world languages and major programming languages
 
-training:
-  total_samples: 50_000_000
-  streaming_enabled: true
-  output_dir: "./tokenizers/train-simple-50M"
-  temperature: 0.3
-  min_samples_per_lang: 500_000    # Higher minimum for better coverage
-  max_samples_per_lang: 10_000_000 # Reasonable maximum for 50M total
-  vocab_size: 128_000              # Standard vocabulary size
+total_samples: 50_000_000
+streaming_enabled: true
+output_dir: "train-medium-50M"
+temperature: 0.3
+min_samples_per_lang: 500_000    # Higher minimum for better coverage
+max_samples_per_lang: 8_000_000  # Reasonable maximum for 50M total
+vocab_size: 128_000              # Standard vocabulary size
 
 datasets:
-  # English - most common
+  # TIER 1: Most common world languages (highest data volumes)
   - path: "HuggingFaceFW/fineweb"
     description: "English web data"
     subsets:
       - name: "sample-10BT"
         priority: 5
 
-  # Top 6 human languages as specified by user
   - path: "HuggingFaceFW/fineweb-2"
-    description: "Multilingual web data"
+    description: "Major world languages"
     subsets:
-      - name: "rus_Cyrl"  # Russian
+      # Top tier - massive datasets
+      - name: "rus_Cyrl"  # Russian (1.65TB)
+        priority: 5
+      - name: "cmn_Hani"  # Chinese (1.34TB)
+        priority: 5
+      - name: "deu_Latn"  # German (640GB)
+        priority: 5
+      - name: "jpn_Jpan"  # Japanese (636GB)
+        priority: 5
+      - name: "spa_Latn"  # Spanish (554GB)
+        priority: 5
+      - name: "fra_Latn"  # French (476GB)
+        priority: 5
+
+      # Second tier - large datasets
+      - name: "ita_Latn"  # Italian (305GB)
         priority: 4
-      - name: "cmn_Hani"  # Mandarin Chinese
+      - name: "por_Latn"  # Portuguese (246GB)
         priority: 4
-      - name: "deu_Latn"  # German
+      - name: "pol_Latn"  # Polish (193GB)
         priority: 4
-      - name: "jpn_Jpan"  # Japanese
+      - name: "nld_Latn"  # Dutch (162GB)
         priority: 4
-      - name: "spa_Latn"  # Spanish
+      - name: "kor_Hang"  # Korean (94GB)
         priority: 4
-      - name: "fra_Latn"  # French
+      - name: "arb_Arab"  # Arabic (94GB)
         priority: 4
 
-  # Essential programming languages - expanded
+  # TIER 2: Major programming languages
   - path: "bigcode/starcoderdata"
-    description: "Programming languages"
+    description: "Major programming languages"
     subsets:
+      # Most essential programming languages
       - name: "python"
-        priority: 4
+        priority: 5
         text_column: "content"
       - name: "javascript"
-        priority: 3
+        priority: 4
         text_column: "content"
       - name: "typescript"
-        priority: 3
+        priority: 4
         text_column: "content"
       - name: "java"
+        priority: 4
+        text_column: "content"
+      - name: "cpp"
+        priority: 4
+        text_column: "content"
+      - name: "c"
+        priority: 4
+        text_column: "content"
+      
+      # Important modern languages
+      - name: "go"
         priority: 3
+        text_column: "content"
+      - name: "rust"
+        priority: 3
+        text_column: "content"
+      - name: "php"
+        priority: 3
+        text_column: "content"
+      - name: "ruby"
+        priority: 3
+        text_column: "content"
+      - name: "swift"
+        priority: 3
+        text_column: "content"
+      - name: "kotlin"
+        priority: 3
+        text_column: "content"
+
+      # Web and data languages
+      - name: "html"
+        priority: 3
+        text_column: "content"
+      - name: "css"
+        priority: 2
+        text_column: "content"
+      - name: "sql"
+        priority: 2
+        text_column: "content"
+      - name: "shell"
+        priority: 2
         text_column: "content" 

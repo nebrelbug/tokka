@@ -1,101 +1,243 @@
 # Complex 500M configuration for multilingual tokenizer training
-# Comprehensive setup with many human languages and programming languages
+# Comprehensive setup with extensive world languages and complete programming language coverage
 
-training:
-  total_samples: 500_000_000
-  streaming_enabled: true
-  output_dir: "./tokenizers/train-complex-500M"
-  temperature: 0.3
-  min_samples_per_lang: 1_000_000   # Higher minimum for better coverage
-  max_samples_per_lang: 30_000_000  # Reasonable maximum for large dataset
-  vocab_size: 128_000               # Standard vocabulary size
+total_samples: 500_000_000
+streaming_enabled: true
+output_dir: "train-complex-500M"
+temperature: 0.3
+min_samples_per_lang: 1_000_000   # Higher minimum for better coverage
+max_samples_per_lang: 30_000_000  # Reasonable maximum for large dataset
+vocab_size: 128_000               # Standard vocabulary size
 
 datasets:
-  # English - important but balanced
+  # TIER 1: Dominant world languages (massive datasets)
   - path: "HuggingFaceFW/fineweb"
     description: "English web data"
     subsets:
       - name: "sample-100BT"
         priority: 5
 
-  # Major world languages - comprehensive coverage
   - path: "HuggingFaceFW/fineweb-2"
-    description: "Multilingual web data"
+    description: "World languages - comprehensive coverage"
     subsets:
-      # Top tier languages
-      - name: "cmn_Hani"  # Chinese
+      # Tier 1: Massive datasets (>500GB)
+      - name: "rus_Cyrl"  # Russian (1.65TB)
+        priority: 5
+      - name: "cmn_Hani"  # Chinese (1.34TB)
+        priority: 5
+      - name: "deu_Latn"  # German (640GB)
+        priority: 5
+      - name: "jpn_Jpan"  # Japanese (636GB)
+        priority: 5
+      - name: "spa_Latn"  # Spanish (554GB)
+        priority: 5
+      - name: "fra_Latn"  # French (476GB)
+        priority: 5
+
+      # Tier 2: Large datasets (100-500GB)
+      - name: "ita_Latn"  # Italian (305GB)
         priority: 4
-      - name: "spa_Latn"  # Spanish
+      - name: "por_Latn"  # Portuguese (246GB)
         priority: 4
-      - name: "fra_Latn"  # French
+      - name: "pol_Latn"  # Polish (193GB)
         priority: 4
-      - name: "deu_Latn"  # German
+      - name: "nld_Latn"  # Dutch (162GB)
         priority: 4
-      - name: "rus_Cyrl"  # Russian
+      - name: "ind_Latn"  # Indonesian (134GB)
         priority: 4
-      - name: "jpn_Jpan"  # Japanese
+      - name: "tur_Latn"  # Turkish (116GB)
         priority: 4
-      # Second tier languages
-      - name: "ita_Latn"  # Italian
+      - name: "ces_Latn"  # Czech (98GB)
+        priority: 4
+      - name: "kor_Hang"  # Korean (94GB)
+        priority: 4
+      - name: "arb_Arab"  # Arabic (94GB)
+        priority: 4
+
+      # Tier 3: Medium datasets (50-100GB)
+      - name: "hun_Latn"  # Hungarian (85GB)
         priority: 3
-      - name: "por_Latn"  # Portuguese
+      - name: "fas_Arab"  # Persian (85GB)
         priority: 3
-      - name: "kor_Hang"  # Korean
+      - name: "ron_Latn"  # Romanian (81GB)
         priority: 3
-      - name: "ara_Arab"  # Arabic
+      - name: "vie_Latn"  # Vietnamese (78GB)
         priority: 3
-      - name: "hin_Deva"  # Hindi
+      - name: "ukr_Cyrl"  # Ukrainian (77GB)
         priority: 3
-      - name: "nld_Latn"  # Dutch
+      - name: "nob_Latn"  # Norwegian (74GB)
         priority: 3
-      # Third tier languages
-      - name: "pol_Latn"  # Polish
+      - name: "tha_Thai"  # Thai (70GB)
+        priority: 3
+      - name: "ell_Grek"  # Greek (68GB)
+        priority: 3
+      - name: "swe_Latn"  # Swedish (63GB)
+        priority: 3
+      - name: "dan_Latn"  # Danish (63GB)
+        priority: 3
+      - name: "fin_Latn"  # Finnish (56GB)
+        priority: 3
+
+      # Tier 4: Smaller but important languages (10-50GB)
+      - name: "bul_Cyrl"  # Bulgarian (43GB)
         priority: 2
-      - name: "tur_Latn"  # Turkish
+      - name: "slk_Latn"  # Slovak (40GB)
         priority: 2
-      - name: "swe_Latn"  # Swedish
+      - name: "hrv_Latn"  # Croatian (32GB)
         priority: 2
-      - name: "nor_Latn"  # Norwegian
+      - name: "hin_Deva"  # Hindi (30GB)
         priority: 2
-      - name: "dan_Latn"  # Danish
+      - name: "lit_Latn"  # Lithuanian (24GB)
         priority: 2
-      - name: "fin_Latn"  # Finnish
+      - name: "bos_Latn"  # Bosnian (23GB)
         priority: 2
-      - name: "ces_Latn"  # Czech
+      - name: "heb_Hebr"  # Hebrew (22GB)
+        priority: 2
+      - name: "ben_Beng"  # Bengali (20GB)
+        priority: 2
+      - name: "slv_Latn"  # Slovenian (18GB)
+        priority: 2
+      - name: "ekk_Latn"  # Estonian (17GB)
+        priority: 2
+      - name: "cat_Latn"  # Catalan (16GB)
+        priority: 2
+      - name: "lvs_Latn"  # Latvian (14GB)
         priority: 2
 
-  # Comprehensive programming languages
+      # Tier 5: Additional coverage
+      - name: "zsm_Latn"  # Malay (12GB)
+        priority: 1
+      - name: "azj_Latn"  # Azerbaijani (9GB)
+        priority: 1
+      - name: "tam_Taml"  # Tamil (8GB)
+        priority: 1
+      - name: "srp_Cyrl"  # Serbian (8GB)
+        priority: 1
+      - name: "als_Latn"  # Albanian (7GB)
+        priority: 1
+      - name: "kat_Geor"  # Georgian (6GB)
+        priority: 1
+
+  # TIER 2: Comprehensive programming languages
   - path: "bigcode/starcoderdata"
-    description: "Programming languages"
+    description: "Comprehensive programming language coverage"
     subsets:
-      # Top tier programming languages
+      # Tier 1: Most critical programming languages
       - name: "python"
-        priority: 4
+        priority: 5
+        text_column: "content"
       - name: "javascript"
         priority: 4
+        text_column: "content"
       - name: "typescript"
         priority: 4
+        text_column: "content"
       - name: "java"
         priority: 4
-      # Second tier programming languages
+        text_column: "content"
       - name: "cpp"
-        priority: 3
+        priority: 4
+        text_column: "content"
       - name: "c"
-        priority: 3
+        priority: 4
+        text_column: "content"
+
+      # Tier 2: Modern systems languages
       - name: "go"
         priority: 3
+        text_column: "content"
       - name: "rust"
         priority: 3
+        text_column: "content"
+      - name: "swift"
+        priority: 3
+        text_column: "content"
+      - name: "kotlin"
+        priority: 3
+        text_column: "content"
+      - name: "scala"
+        priority: 3
+        text_column: "content"
+
+      # Tier 3: Web and scripting languages
       - name: "php"
         priority: 3
-      # Third tier programming languages
+        text_column: "content"
       - name: "ruby"
+        priority: 3
+        text_column: "content"
+      - name: "html"
+        priority: 3
+        text_column: "content"
+      - name: "css"
         priority: 2
-      - name: "swift"
-        priority: 2
-      - name: "kotlin"
-        priority: 2
-      - name: "scala"
-        priority: 2
+        text_column: "content"
       - name: "shell"
-        priority: 2 
+        priority: 2
+        text_column: "content"
+      - name: "sql"
+        priority: 2
+        text_column: "content"
+
+      # Tier 4: Functional and academic languages
+      - name: "haskell"
+        priority: 2
+        text_column: "content"
+      - name: "ocaml"
+        priority: 2
+        text_column: "content"
+      - name: "erlang"
+        priority: 2
+        text_column: "content"
+      - name: "clojure"
+        priority: 2
+        text_column: "content"
+      - name: "common-lisp"
+        priority: 1
+        text_column: "content"
+      - name: "scheme"
+        priority: 1
+        text_column: "content"
+
+      # Tier 5: Specialized and niche languages
+      - name: "c-sharp"
+        priority: 2
+        text_column: "content"
+      - name: "f-sharp"
+        priority: 1
+        text_column: "content"
+      - name: "julia"
+        priority: 2
+        text_column: "content"
+      - name: "r"
+        priority: 2
+        text_column: "content"
+      - name: "matlab"
+        priority: 1
+        text_column: "content"
+      - name: "lua"
+        priority: 1
+        text_column: "content"
+      - name: "perl"
+        priority: 1
+        text_column: "content"
+      - name: "dart"
+        priority: 1
+        text_column: "content"
+      - name: "elixir"
+        priority: 1
+        text_column: "content"
+      - name: "zig"
+        priority: 1
+        text_column: "content"
+
+      # Configuration and markup
+      - name: "json"
+        priority: 2
+        text_column: "content"
+      - name: "yaml"
+        priority: 1
+        text_column: "content"
+      - name: "markdown"
+        priority: 2
+        text_column: "content" 

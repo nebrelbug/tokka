@@ -3,7 +3,9 @@
 Tokenizer utilities for multilingual BPE tokenizer training.
 """
 
+import hashlib
 import os
+import time
 from pathlib import Path
 from typing import Iterator
 
@@ -128,8 +130,13 @@ def setup_post_processor(tokenizer: Tokenizer) -> None:
 
 def save_tokenizer(tokenizer: Tokenizer, cfg: DictConfig) -> None:
     """Save the trained tokenizer and related files."""
-    output_dir = Path(cfg.training.output_dir)
-    output_dir.mkdir(exist_ok=True)
+    # Generate timestamp prefix
+    timestamp = hashlib.sha256(str(time.time()).encode()).hexdigest()[:6]
+    timestamped_output_dir = f"{timestamp}-{cfg.output_dir}"
+
+    # Automatically add tokenizers/ prefix and create directory
+    output_dir = Path("tokenizers") / timestamped_output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save tokenizer
     tokenizer_file = output_dir / "tokenizer.json"
@@ -161,6 +168,7 @@ def save_tokenizer(tokenizer: Tokenizer, cfg: DictConfig) -> None:
     print(f"Vocabulary saved to {vocab_file}")
     print(f"Configuration saved to {config_file}")
     print(f"Final vocabulary size: {tokenizer.get_vocab_size()}")
+    print(f"Output directory: {output_dir}")
     print("Training complete!")
 
 

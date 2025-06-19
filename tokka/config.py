@@ -73,14 +73,11 @@ def parse_datasets_from_config(cfg: DictConfig) -> List[DatasetConfig]:
 
 def validate_config(cfg: DictConfig) -> None:
     """Validate that the configuration has all required fields."""
-    if not hasattr(cfg, "training"):
-        raise ValueError("Configuration must contain 'training' section")
-
     if not hasattr(cfg, "datasets"):
         raise ValueError("Configuration must contain 'datasets' section")
 
-    # Validate training section
-    required_training_fields = [
+    # Validate top-level training fields
+    required_fields = [
         "total_samples",
         "output_dir",
         "temperature",
@@ -89,9 +86,9 @@ def validate_config(cfg: DictConfig) -> None:
         "vocab_size",
     ]
 
-    for field in required_training_fields:
-        if not hasattr(cfg.training, field):
-            raise ValueError(f"Training configuration missing required field: {field}")
+    for field in required_fields:
+        if not hasattr(cfg, field):
+            raise ValueError(f"Configuration missing required field: {field}")
 
     # Validate datasets
     if len(cfg.datasets) == 0:
@@ -101,11 +98,11 @@ def validate_config(cfg: DictConfig) -> None:
 def print_config_summary(cfg: DictConfig) -> None:
     """Print a summary of the loaded configuration."""
     print("🔧 Configuration loaded:")
-    print(f"  Total samples: {cfg.training.total_samples:,}")
-    print(f"  Vocabulary size: {cfg.training.vocab_size:,}")
-    print(f"  Output directory: {cfg.training.output_dir}")
-    print(f"  Temperature: {cfg.training.temperature}")
-    print(f"  Streaming: {cfg.training.streaming_enabled}")
-    print(f"  Min samples per lang: {cfg.training.min_samples_per_lang:,}")
-    print(f"  Max samples per lang: {cfg.training.max_samples_per_lang:,}")
+    print(f"  Total samples: {cfg.total_samples:,}")
+    print(f"  Vocabulary size: {cfg.vocab_size:,}")
+    print(f"  Output directory: ./tokenizers/<hash>-{cfg.output_dir}")
+    print(f"  Temperature: {cfg.temperature}")
+    print(f"  Streaming: {cfg.streaming_enabled}")
+    print(f"  Min samples per lang: {cfg.min_samples_per_lang:,}")
+    print(f"  Max samples per lang: {cfg.max_samples_per_lang:,}")
     print()

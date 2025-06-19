@@ -44,10 +44,10 @@ def train_tokenizer_pipeline(cfg):
     # Generate dataset configuration with priority-based sampling
     datasets_config = generate_datasets_config(
         datasets=datasets,
-        total_samples=cfg.training.total_samples,
-        temperature=cfg.training.temperature,
-        min_samples_per_lang=cfg.training.min_samples_per_lang,
-        max_samples_per_lang=cfg.training.max_samples_per_lang,
+        total_samples=cfg.total_samples,
+        temperature=cfg.temperature,
+        min_samples_per_lang=cfg.min_samples_per_lang,
+        max_samples_per_lang=cfg.max_samples_per_lang,
     )
 
     # Print dataset distribution
@@ -55,12 +55,12 @@ def train_tokenizer_pipeline(cfg):
 
     # Load and interleave datasets
     interleaved_dataset, probabilities = load_and_interleave_datasets(
-        datasets_config, cfg.training.streaming_enabled
+        datasets_config, cfg.streaming_enabled
     )
 
     # Create tokenizer and trainer
     tokenizer = create_tokenizer()
-    trainer = create_trainer(vocab_size=cfg.training.vocab_size)
+    trainer = create_trainer(vocab_size=cfg.vocab_size)
 
     # Create text iterator and train tokenizer
     text_iterator = create_text_iterator(interleaved_dataset)
