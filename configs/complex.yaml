@@ -1,12 +1,12 @@
-# Complex 500M configuration for multilingual tokenizer training
+# Complex 150M configuration for multilingual tokenizer training
 # Comprehensive setup with extensive world languages and complete programming language coverage
 
-total_samples: 500_000_000
+total_samples: 150_000_000
 streaming_enabled: true
-output_dir: "train-complex-500M"
+output_dir: "train-complex-150M"
 temperature: 0.3
-min_samples_per_lang: 1_000_000   # Higher minimum for better coverage
-max_samples_per_lang: 30_000_000  # Reasonable maximum for large dataset
+min_samples_per_lang: 500_000     # Balanced minimum for good coverage
+max_samples_per_lang: 10_000_000  # Reasonable maximum for 150M dataset
 vocab_size: 128_000               # Standard vocabulary size
 
 datasets:

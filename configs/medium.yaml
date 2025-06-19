@@ -1,12 +1,12 @@
-# Medium 50M configuration for multilingual tokenizer training
+# Medium 10M configuration for multilingual tokenizer training
 # Comprehensive setup with common world languages and major programming languages
 
-total_samples: 50_000_000
+total_samples: 10_000_000
 streaming_enabled: true
-output_dir: "train-medium-50M"
+output_dir: "train-medium-10M"
 temperature: 0.3
-min_samples_per_lang: 500_000    # Higher minimum for better coverage
-max_samples_per_lang: 8_000_000  # Reasonable maximum for 50M total
+min_samples_per_lang: 200_000    # Balanced minimum for good coverage
+max_samples_per_lang: 2_000_000  # Reasonable maximum for 10M total
 vocab_size: 128_000              # Standard vocabulary size
 
 datasets:
