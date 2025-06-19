@@ -3,6 +3,7 @@
 Dataset utilities for multilingual tokenizer training.
 """
 
+import time
 from typing import Any, Dict, Iterator, List
 
 from datasets import interleave_datasets, load_dataset
@@ -69,10 +70,19 @@ def load_and_interleave_datasets(
 
     # Store both the dataset and its successful config
     successful_loads = []
-    for dataset_cfg in datasets_config:
+    for i, dataset_cfg in enumerate(datasets_config):
         print(
             f"Loading {dataset_cfg['path']} ({dataset_cfg.get('name', 'default')}) - samples: {dataset_cfg['samples']:,}"
         )
+
+        # Add delay between requests to avoid rate limiting
+        if i > 0:  # Don't delay on first request
+            delay = min(
+                2 + (i // 5), 10
+            )  # Progressive delay: 2s, then +1s every 5 datasets, max 10s
+            print(f"  Waiting {delay}s to avoid rate limiting...")
+            time.sleep(delay)
+
         try:
             load_kwargs = {
                 "path": dataset_cfg["path"],
@@ -93,10 +103,34 @@ def load_and_interleave_datasets(
 
             dataset = load_dataset(**load_kwargs)
             dataset = dataset.take(dataset_cfg["samples"])
+
+            # Only keep essential columns to avoid schema conflicts
+            # Map all datasets to have just 'text' column
+            def standardize_columns(example):
+                # Use the configured text_column first, then fallback to common names
+                text_col = dataset_cfg.get("text_column", "text")
+                text = (
+                    example.get(text_col, "")
+                    or example.get("text", "")
+                    or example.get("content", "")
+                    or example.get("code", "")
+                )
+                return {"text": text}
+
+            dataset = dataset.map(standardize_columns)
+
             # Append both the dataset and its config
             successful_loads.append({"dataset": dataset, "config": dataset_cfg})
+            print(
+                f"  ✅ Successfully loaded {dataset_cfg['path']} ({dataset_cfg.get('name', 'default')})"
+            )
+
         except Exception as e:
-            print(f"Warning: Could not load {dataset_cfg['path']}: {e}")
+            print(f"  ❌ Warning: Could not load {dataset_cfg['path']}: {e}")
+            # If it's a rate limit error, wait longer before continuing
+            if "429" in str(e) or "Too Many Requests" in str(e):
+                print("  Rate limited - waiting 30s before continuing...")
+                time.sleep(30)
             continue
 
     # Check if any datasets were loaded successfully
@@ -138,12 +172,8 @@ def create_text_iterator(interleaved_dataset) -> Iterator[str]:
     """Create an iterator that yields text from the interleaved dataset."""
     count = 0
     for sample in interleaved_dataset:
-        # Try different common column names for text content
-        text = (
-            sample.get("text", "")
-            or sample.get("content", "")
-            or sample.get("code", "")
-        )
+        # Now we standardized everything to 'text' column
+        text = sample.get("text", "")
         if text and len(text.strip()) > 10:  # Filter very short texts
             count += 1
             if count % 5000 == 0:

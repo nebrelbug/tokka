@@ -16,3 +16,10 @@ datasets:
     subsets:
       - name: "sample-10BT"
         priority: 5 
+
+  - path: "bigcode/starcoderdata"
+    description: "Core programming languages"
+    subsets:
+      - name: "python"
+        priority: 5
+        text_column: "content"
