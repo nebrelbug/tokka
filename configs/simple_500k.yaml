@@ -1,0 +1,46 @@
+# Simple 500K configuration for multilingual tokenizer training
+# Basic setup with most common human languages and essential coding languages
+
+training:
+  total_samples: 500_000
+  streaming_enabled: true
+  output_dir: "./tokenizers/train-simple-500k"
+  temperature: 0.3
+  min_samples_per_lang: 10_000    # Lower minimum for small dataset
+  max_samples_per_lang: 100_000   # Lower maximum for balanced distribution
+
+datasets:
+  # English - most common
+  - path: "HuggingFaceFW/fineweb"
+    description: "English web data"
+    subsets:
+      - name: "sample-10BT"
+        priority: 5
+
+  # Top 5 human languages as specified by user
+  - path: "HuggingFaceFW/fineweb-2"
+    description: "Multilingual web data"
+    subsets:
+      - name: "rus_Cyrl"  # Russian
+        priority: 4
+      - name: "cmn_Hani"  # Mandarin Chinese
+        priority: 4
+      - name: "deu_Latn"  # German
+        priority: 4
+      - name: "jpn_Jpan"  # Japanese
+        priority: 4
+      - name: "spa_Latn"  # Spanish
+        priority: 4
+      - name: "fra_Latn"  # French
+        priority: 4
+
+  # Essential programming languages
+  - path: "bigcode/starcoderdata"
+    description: "Programming languages"
+    subsets:
+      - name: "python"
+        priority: 4
+        text_column: "content"
+      - name: "javascript"
+        priority: 3
+        text_column: "content"

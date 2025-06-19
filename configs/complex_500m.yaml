@@ -1,0 +1,100 @@
+# Complex 500M configuration for multilingual tokenizer training
+# Comprehensive setup with many human languages and programming languages
+
+training:
+  total_samples: 500_000_000
+  streaming_enabled: true
+  output_dir: "./tokenizers/train-complex-500M"
+  temperature: 0.3
+  min_samples_per_lang: 1_000_000   # Higher minimum for better coverage
+  max_samples_per_lang: 30_000_000  # Reasonable maximum for large dataset
+
+datasets:
+  # English - important but balanced
+  - path: "HuggingFaceFW/fineweb"
+    description: "English web data"
+    subsets:
+      - name: "sample-100BT"
+        priority: 5
+
+  # Major world languages - comprehensive coverage
+  - path: "HuggingFaceFW/fineweb-2"
+    description: "Multilingual web data"
+    subsets:
+      # Top tier languages
+      - name: "cmn_Hani"  # Chinese
+        priority: 4
+      - name: "spa_Latn"  # Spanish
+        priority: 4
+      - name: "fra_Latn"  # French
+        priority: 4
+      - name: "deu_Latn"  # German
+        priority: 4
+      - name: "rus_Cyrl"  # Russian
+        priority: 4
+      - name: "jpn_Jpan"  # Japanese
+        priority: 4
+      # Second tier languages
+      - name: "ita_Latn"  # Italian
+        priority: 3
+      - name: "por_Latn"  # Portuguese
+        priority: 3
+      - name: "kor_Hang"  # Korean
+        priority: 3
+      - name: "ara_Arab"  # Arabic
+        priority: 3
+      - name: "hin_Deva"  # Hindi
+        priority: 3
+      - name: "nld_Latn"  # Dutch
+        priority: 3
+      # Third tier languages
+      - name: "pol_Latn"  # Polish
+        priority: 2
+      - name: "tur_Latn"  # Turkish
+        priority: 2
+      - name: "swe_Latn"  # Swedish
+        priority: 2
+      - name: "nor_Latn"  # Norwegian
+        priority: 2
+      - name: "dan_Latn"  # Danish
+        priority: 2
+      - name: "fin_Latn"  # Finnish
+        priority: 2
+      - name: "ces_Latn"  # Czech
+        priority: 2
+
+  # Comprehensive programming languages
+  - path: "bigcode/starcoderdata"
+    description: "Programming languages"
+    subsets:
+      # Top tier programming languages
+      - name: "python"
+        priority: 4
+      - name: "javascript"
+        priority: 4
+      - name: "typescript"
+        priority: 4
+      - name: "java"
+        priority: 4
+      # Second tier programming languages
+      - name: "cpp"
+        priority: 3
+      - name: "c"
+        priority: 3
+      - name: "go"
+        priority: 3
+      - name: "rust"
+        priority: 3
+      - name: "php"
+        priority: 3
+      # Third tier programming languages
+      - name: "ruby"
+        priority: 2
+      - name: "swift"
+        priority: 2
+      - name: "kotlin"
+        priority: 2
+      - name: "scala"
+        priority: 2
+      - name: "shell"
+        priority: 2 
