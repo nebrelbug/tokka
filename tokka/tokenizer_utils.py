@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Iterator
 
 from omegaconf import DictConfig, OmegaConf
+
 from tokenizers import (
     Tokenizer,
     decoders,
@@ -66,14 +67,14 @@ def get_special_tokens() -> list:
     return special_tokens
 
 
-def create_trainer(vocab_size: int = 128000) -> trainers.BpeTrainer:
+def create_trainer(vocab_size: int) -> trainers.BpeTrainer:
     """Create a BPE trainer with the specified vocabulary size."""
     special_tokens = get_special_tokens()
 
     print(f"Total special tokens: {len(special_tokens)}")
 
-    # BPE trainer with large vocab for multilingual support
-    # Total vocab: 128,000 = 256 special + 256 byte fallbacks + 127,488 trained BPE
+    # BPE trainer with configurable vocab size for multilingual support
+    # Total vocab = 256 special + 256 byte fallbacks + (vocab_size - 512) trained BPE
     trainer = trainers.BpeTrainer(
         vocab_size=vocab_size,
         special_tokens=special_tokens,
@@ -138,10 +139,19 @@ def save_tokenizer(tokenizer: Tokenizer, cfg: DictConfig) -> None:
     vocab_file = output_dir / "vocab.txt"
     vocab = tokenizer.get_vocab()
     with open(vocab_file, "w", encoding="utf-8") as f:
+        f.write("# Vocabulary file: ID\tTOKEN\tDECODED_TEXT\n")
         # Sort by token ID
         sorted_vocab = sorted(vocab.items(), key=lambda x: x[1])
         for token, token_id in sorted_vocab:
-            f.write(f"{token_id}\t{token}\n")
+            try:
+                # Try to decode the token to see what text it represents
+                decoded_token = tokenizer.decode([token_id])
+                # Escape control characters and make them visible
+                decoded_display = repr(decoded_token) if decoded_token else "''"
+                f.write(f"{token_id}\t{repr(token)}\t{decoded_display}\n")
+            except Exception as e:
+                # If decoding fails, just show the raw token
+                f.write(f"{token_id}\t{repr(token)}\t[DECODE_ERROR: {e}]\n")
 
     # Save the final configuration used
     config_file = output_dir / "config.yaml"
@@ -159,6 +169,8 @@ def test_tokenizer(tokenizer: Tokenizer) -> None:
     print("\n--- Tokenizer Test ---")
     test_texts = [
         "Hello, how are you today?",
+        "Привет, как дела?",  # Russian: "Hello, how are things?"
+        "Я изучаю русский язык",  # Russian: "I am studying Russian"
         "Bonjour, comment allez-vous?",
         "Hola, ¿cómo estás?",
         "Hallo, wie geht es dir?",

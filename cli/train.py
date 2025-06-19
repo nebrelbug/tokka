@@ -60,7 +60,7 @@ def train_tokenizer_pipeline(cfg):
 
     # Create tokenizer and trainer
     tokenizer = create_tokenizer()
-    trainer = create_trainer()
+    trainer = create_trainer(vocab_size=cfg.training.vocab_size)
 
     # Create text iterator and train tokenizer
     text_iterator = create_text_iterator(interleaved_dataset)

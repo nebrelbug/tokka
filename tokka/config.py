@@ -86,6 +86,7 @@ def validate_config(cfg: DictConfig) -> None:
         "temperature",
         "min_samples_per_lang",
         "max_samples_per_lang",
+        "vocab_size",
     ]
 
     for field in required_training_fields:
@@ -101,6 +102,7 @@ def print_config_summary(cfg: DictConfig) -> None:
     """Print a summary of the loaded configuration."""
     print("🔧 Configuration loaded:")
     print(f"  Total samples: {cfg.training.total_samples:,}")
+    print(f"  Vocabulary size: {cfg.training.vocab_size:,}")
     print(f"  Output directory: {cfg.training.output_dir}")
     print(f"  Temperature: {cfg.training.temperature}")
     print(f"  Streaming: {cfg.training.streaming_enabled}")

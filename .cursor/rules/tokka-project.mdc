@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Tokka Project Context
+
+## Overview
+Tokka is a Python toolkit for training multilingual BPE tokenizers. Uses **uv** (not pip) for package management.
+
+## Project Structure
+- [tokka/](mdc:tokka) - Core library (config, dataset_utils, tokenizer_utils)
+- [cli/](mdc:cli) - CLI commands (train.py, test.py)  
+- [configs/](mdc:configs) - YAML configurations (simple.yaml, medium.yaml, complex.yaml)
+- [pyproject.toml](mdc:pyproject.toml) - Project config with CLI entry points
+
+## Key Commands (Always use uv!)
+- `uv run train --config configs/simple.yaml` - Train tokenizer
+- `uv run test --tokenizer-path ./path/to/tokenizer.json` - Test tokenizer
+- `uv sync` - Install/update dependencies
+- `uv add package` - Add dependency
+
+## Architecture
+- **Library code** ([tokka/](mdc:tokka)) - Pure Python, no CLI logic
+- **CLI code** ([cli/](mdc:cli)) - Imports from tokka package
+- CLI entry points defined in [pyproject.toml](mdc:pyproject.toml) `[project.scripts]`
+- OmegaConf for YAML configuration with CLI overrides
+
+## Important: Never use pip/python directly - always use `uv run`!

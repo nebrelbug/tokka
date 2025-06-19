@@ -1,0 +1,19 @@
+# Tiny 10K configuration for testing tokenizer training
+# Single language (Russian) with minimal samples for quick testing
+
+training:
+  total_samples: 1_000
+  streaming_enabled: true
+  output_dir: "./tokenizers/train-tiny-10k"
+  temperature: 0.3
+  min_samples_per_lang: 500      # Lower minimum for tiny dataset
+  max_samples_per_lang: 1_000    # Max matches total samples
+  vocab_size: 10_000             # Small vocabulary for testing
+
+datasets:
+  # Russian only for tiny testing
+  - path: "HuggingFaceFW/fineweb-2"
+    description: "Russian web data for testing"
+    subsets:
+      - name: "rus_Cyrl"  # Russian
+        priority: 5 

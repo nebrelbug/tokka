@@ -8,6 +8,7 @@ training:
   temperature: 0.3
   min_samples_per_lang: 500_000    # Higher minimum for better coverage
   max_samples_per_lang: 10_000_000 # Reasonable maximum for 50M total
+  vocab_size: 128_000              # Standard vocabulary size
 
 datasets:
   # English - most common
